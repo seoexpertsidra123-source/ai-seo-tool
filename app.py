@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # 🔐 API KEY (from Render environment variable)
-client = OpenAI(api_key=os.environ.get("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"))
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route("/", methods=["GET", "POST"])
 def index():
