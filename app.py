@@ -1,42 +1,55 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request
 from openai import OpenAI
 import os
 
 app = Flask(__name__)
 
-# API key from environment
+# 🔐 API KEY (from Render environment variable)
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    try:
-        response_text = ""
+    response_text = ""
 
-        if request.method == "POST":
-            mode = request.form.get("mode")
-            user_input = request.form.get("prompt")
+    if request.method == "POST":
+        user_input = request.form.get("prompt")
+        mode = request.form.get("mode")
 
-            if mode == "count":
-                word_count = len(user_input.split())
-                response_text = f"Word Count: {word_count}"
+        # 🧠 MODE LOGIC
+        if mode == "seo":
+            prompt = f"Write a fully SEO optimized article about: {user_input}. Include headings, keywords, and meta description."
 
-            else:
-                system_prompt = "You are a helpful assistant."
+        elif mode == "humanize":
+            prompt = f"Rewrite this content in a natural, human-like way:\n\n{user_input}"
 
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_input}
-                    ]
-                )
+        elif mode == "detect":
+            prompt = f"Analyze this content and tell if it is AI-generated or human-written. Give percentage and explanation:\n\n{user_input}"
 
-                response_text = response.choices[0].message.content
+        elif mode == "count":
+            prompt = f"Count total words, sentences, and characters in this text:\n\n{user_input}"
 
-        return render_template("index.html", response=response_text)
+        elif mode == "image":
+            prompt = f"Create a detailed AI image prompt for this idea:\n\n{user_input}"
 
-    except Exception as e:
-        return f"ERROR: {str(e)}"  # 🔥 will show real issue
+        else:
+            prompt = user_input
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[
+                    {"role": "system", "content": "You are a helpful AI tool."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+
+            response_text = response.choices[0].message.content
+
+        except Exception as e:
+            response_text = f"Error: {str(e)}"
+
+    return render_template("index.html", response=response_text)
+
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
