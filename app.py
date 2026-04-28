@@ -17,7 +17,22 @@ def index():
 
         # 🧠 MODE LOGIC
         if mode == "seo":
-            prompt = f"Write a fully SEO optimized article about: {user_input}. Include headings, keywords, and meta description."
+            prompt = f"prompt = f"""
+Write a fully SEO optimized article about: {user_input}
+
+IMPORTANT:
+- Do NOT use markdown symbols (no #, **, or ```)
+- Do NOT include code blocks or formatting symbols
+- Write clean, professional paragraphs
+- Include:
+  - Title
+  - Meta description
+  - Headings (written normally, not with #)
+  - Well-structured content
+- Make it easy to read and human-like
+
+Output should be clean plain text only.
+"""."
 
         elif mode == "humanize":
             prompt = f"Rewrite this content in a natural, human-like way:\n\n{user_input}"
