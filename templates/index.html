@@ -178,7 +178,11 @@ function copyText() {
 </form>
 
 <div class="output" id="outputText">
-    {{ response }}
+    {% if response %}
+        {{ response }}
+    {% else %}
+        <span style="color:#64748b;">Your generated content will appear here...</span>
+    {% endif %}
 </div>
 
 <button class="copy-btn" onclick="copyText()">Copy Output</button>
