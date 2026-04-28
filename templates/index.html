@@ -1,61 +1,137 @@
 <!DOCTYPE html>
+
 <html>
 <head>
-    <title>AI Content Toolkit</title>
-    <style>
-        body { font-family: Arial; background:#f5f5f5; padding:30px; }
-        .container { max-width:800px; margin:auto; background:white; padding:20px; border-radius:10px; }
-        .tabs button {
-            padding:10px;
-            margin:5px;
-            border:none;
-            background:#ddd;
-            cursor:pointer;
-        }
-        .tabs button.active { background:#333; color:white; }
-        textarea { width:100%; padding:10px; margin-top:10px; }
-        .output { background:#eee; padding:15px; margin-top:15px; white-space:pre-wrap; }
-    </style>
+<title>AI Content Toolkit</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.tabs {
+    margin-bottom: 15px;
+}
+
+.tabs button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    background: #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tabs button.active {
+    background: #222;
+    color: white;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+button.generate {
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button.generate:hover {
+    background: #0056b3;
+}
+
+.output {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f1f1f1;
+    border-radius: 8px;
+    min-height: 120px;
+    white-space: pre-wrap;
+}
+
+.loading {
+    display: none;
+    margin-top: 10px;
+    color: #555;
+}
+</style>
+
+<script>
+function setMode(mode) {
+    document.getElementById("mode").value = mode;
+
+    let buttons = document.querySelectorAll(".tabs button");
+    buttons.forEach(btn => btn.classList.remove("active"));
+
+    document.getElementById(mode).classList.add("active");
+}
+
+function showLoading() {
+    document.getElementById("loading").style.display = "block";
+}
+</script>
+
 </head>
 
 <body>
 
 <div class="container">
-    <h2> AI Content Toolkit</h2>
+    <h1>🚀 AI Content Toolkit</h1>
 
-    <div class="tabs">
-        <button onclick="setMode('seo')" class="active">SEO</button>
-        <button onclick="setMode('humanize')">Humanize</button>
-        <button onclick="setMode('detect')">Detect AI</button>
-        <button onclick="setMode('count')">Word Count</button>
-        <button onclick="setMode('image')">Image</button>
-    </div>
-
-<form method="POST" onsubmit="showLoading()">
-            <input type="hidden" name="mode" id="mode" value="seo">
-        <textarea name="prompt" rows="6" placeholder="Enter your content..."></textarea>
-
-        <br><br>
-        <button type="submit">Generate</button>
-    </form>
-    <p id="loading" style="display:none;">Generating... ⏳</p>
-
-    <div class="output">
-        {{ response }}
-    </div>
+```
+<div class="tabs">
+    <button id="seo" class="active" onclick="setMode('seo')">SEO</button>
+    <button id="humanize" onclick="setMode('humanize')">Humanize</button>
+    <button id="detect" onclick="setMode('detect')">Detect AI</button>
+    <button id="count" onclick="setMode('count')">Word Count</button>
+    <button id="image" onclick="setMode('image')">Image</button>
 </div>
 
-<script>
-function setMode(value){
-    document.getElementById("mode").value = value;
+<form method="POST" onsubmit="showLoading()">
+    <input type="hidden" name="mode" id="mode" value="seo">
 
-    document.querySelectorAll(".tabs button").forEach(btn=>{
-        btn.classList.remove("active");
-    });
+    <textarea name="prompt" placeholder="Enter your content..."></textarea>
 
-    event.target.classList.add("active");
-}
-</script>
+    <br>
+    <button class="generate" type="submit">Generate</button>
+
+    <p id="loading" class="loading">⏳ Generating content...</p>
+</form>
+
+<div class="output">
+    {{ response }}
+</div>
+```
+
+</div>
 
 </body>
 </html>
