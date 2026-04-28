@@ -1,86 +1,127 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>AI Content Toolkit</title>
 
 <style>
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
     margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff;
 }
 
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.header p {
+    color: #94a3b8;
+}
+
+/* CONTAINER */
 .container {
     max-width: 900px;
-    margin: 50px auto;
-    background: white;
+    margin: 20px auto;
+    background: #111827;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-h1 {
-    margin-bottom: 20px;
-}
-
+/* TABS */
 .tabs {
-    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
 .tabs button {
     padding: 10px 15px;
-    margin: 5px;
     border: none;
-    background: #e0e0e0;
-    border-radius: 6px;
+    background: #1f2937;
+    color: #cbd5f5;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
+    transition: 0.3s;
 }
 
 .tabs button.active {
-    background: #222;
+    background: #3b82f6;
     color: white;
 }
 
+.tabs button:hover {
+    background: #2563eb;
+}
+
+/* TEXTAREA */
 textarea {
     width: 100%;
-    height: 150px;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-top: 10px;
+    height: 160px;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: #0f172a;
+    color: white;
     font-size: 14px;
 }
 
-button.generate {
+/* BUTTON */
+.generate {
     margin-top: 15px;
-    padding: 12px 20px;
-    background: #007bff;
-    color: white;
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    color: white;
     cursor: pointer;
     font-size: 15px;
+    transition: 0.3s;
 }
 
-button.generate:hover {
-    background: #0056b3;
+.generate:hover {
+    opacity: 0.9;
 }
 
+/* OUTPUT */
 .output {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f1f1f1;
-    border-radius: 8px;
+    margin-top: 25px;
+    background: #0f172a;
+    padding: 20px;
+    border-radius: 12px;
     min-height: 120px;
     white-space: pre-wrap;
 }
 
+/* COPY BUTTON */
+.copy-btn {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #374151;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+/* LOADING */
 .loading {
     display: none;
     margin-top: 10px;
-    color: #555;
+    color: #94a3b8;
+    font-size: 14px;
 }
 </style>
 
@@ -97,14 +138,24 @@ function setMode(mode) {
 function showLoading() {
     document.getElementById("loading").style.display = "block";
 }
+
+function copyText() {
+    let text = document.getElementById("outputText").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Copied!");
+}
 </script>
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="header">
     <h1>🚀 AI Content Toolkit</h1>
+    <p>Generate SEO content, humanize AI text, detect AI, and more</p>
+</div>
+
+<div class="container">
 
 ```
 <div class="tabs">
@@ -118,7 +169,7 @@ function showLoading() {
 <form method="POST" onsubmit="showLoading()">
     <input type="hidden" name="mode" id="mode" value="seo">
 
-    <textarea name="prompt" placeholder="Enter your content..."></textarea>
+    <textarea name="prompt" placeholder="Enter your content here..."></textarea>
 
     <br>
     <button class="generate" type="submit">Generate</button>
@@ -126,9 +177,11 @@ function showLoading() {
     <p id="loading" class="loading">⏳ Generating content...</p>
 </form>
 
-<div class="output">
+<div class="output" id="outputText">
     {{ response }}
 </div>
+
+<button class="copy-btn" onclick="copyText()">Copy Output</button>
 ```
 
 </div>
