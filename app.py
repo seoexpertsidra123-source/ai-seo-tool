@@ -13,18 +13,18 @@ def index():
     response_text = ""
 
     if request.method == "POST":
-        user_input = request.form.get("prompt")
-        mode = request.form.get("mode")
+        user_input = request.form.get("prompt", "")
+        mode = request.form.get("mode", "seo")
 
         # 🔥 MODE LOGIC
         if mode == "seo":
-            prompt = f"Write a clean, human-like SEO article about {user_input}. Include title, meta description, and headings. Do not use markdown symbols."
+            prompt = f"Write a clean, human-like SEO article about {user_input}. Include title, meta description, and headings. Do NOT use markdown, stars, hashtags, or symbols."
 
         elif mode == "humanize":
             prompt = f"Rewrite this content in a natural, human-like tone:\n{user_input}"
 
         elif mode == "detect":
-            prompt = f"Analyze this content and tell if it is AI or human-written. Give percentage and explanation:\n{user_input}"
+            prompt = f"Analyze this content and tell if it is AI-generated or human-written. Give percentage and explanation:\n{user_input}"
 
         elif mode == "count":
             prompt = f"Count total words, sentences, and characters in this text:\n{user_input}"
@@ -45,9 +45,12 @@ def index():
 
             response_text = response.choices[0].message.content
 
-            # 🔥 CLEAN OUTPUT (remove markdown junk)
-            response_text = re.sub(r"[#*`]", "", response_text)
+            # 🔥 STRONG CLEANING (removes markdown garbage)
+            response_text = re.sub(r"```.*?```", "", response_text, flags=re.DOTALL)
+            response_text = re.sub(r"[#*_`>-]", "", response_text)
             response_text = response_text.replace("---", "")
+            response_text = re.sub(r"\n\s*\n", "\n\n", response_text)
+            response_text = response_text.strip()
 
         except Exception as e:
             response_text = f"Error: {str(e)}"
