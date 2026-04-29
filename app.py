@@ -130,6 +130,10 @@ def ai_content():
 def humanize_page():
     return render_template("humanize-ai-text.html")
 
+@app.route("/ai-detector-free")
+def detector_page():
+    return render_template("ai-detector-free.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
