@@ -24,6 +24,7 @@ body {
     color:white;
     text-decoration:none;
     margin-left:20px;
+    font-size:14px;
 }
 
 /* CENTER */
@@ -38,11 +39,12 @@ body {
 
 h1 {
     font-size:48px;
+    margin-bottom:10px;
 }
 
 .subtitle {
     color:#94a3b8;
-    margin-bottom:40px;
+    margin-bottom:30px;
 }
 
 /* CHAT BOX */
@@ -54,6 +56,7 @@ h1 {
     padding:10px;
     display:flex;
     align-items:center;
+    box-shadow:0 0 25px rgba(0,0,0,0.4);
 }
 
 textarea {
@@ -64,6 +67,7 @@ textarea {
     padding:15px;
     outline:none;
     resize:none;
+    font-size:14px;
 }
 
 /* BUTTON */
@@ -74,13 +78,39 @@ button {
     padding:14px;
     border-radius:50%;
     cursor:pointer;
-    font-size:18px;
+    font-size:16px;
+}
+
+/* SUGGESTIONS */
+.suggestions {
+    margin-top:20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.suggestions button {
+    background:#0f172a;
+    border:1px solid #1e293b;
+    color:white;
+    padding:10px 15px;
+    border-radius:20px;
+    cursor:pointer;
+    font-size:13px;
+    transition:0.3s;
+}
+
+.suggestions button:hover {
+    background:#7c3aed;
 }
 </style>
 
 </head>
 
 <body>
+
+<!-- NAVBAR -->
 
 <div class="navbar">
     <div>🚀 BuildContent AI</div>
@@ -96,19 +126,40 @@ button {
 
 </div>
 
+<!-- MAIN -->
+
 <div class="wrapper">
 
 <h1>BuildContent AI</h1>
 <p class="subtitle">All-in-one AI writing platform</p>
 
 <form action="/ai-content-generator" method="GET">
+
 <div class="chat-box">
-<textarea placeholder="Ask anything..."></textarea>
+<textarea id="promptBox" placeholder="Ask anything..."></textarea>
 <button>↑</button>
 </div>
+
 </form>
 
+<!-- SUGGESTIONS -->
+
+<div class="suggestions">
+    <button onclick="setPrompt('Write SEO article about digital marketing')">SEO Article</button>
+    <button onclick="setPrompt('Do keyword research for fitness niche')">Keyword Research</button>
+    <button onclick="setPrompt('Write Instagram caption for travel')">Social Caption</button>
+    <button onclick="setPrompt('Generate blog ideas for tech')">Blog Ideas</button>
 </div>
+
+</div>
+
+<!-- SCRIPT -->
+
+<script>
+function setPrompt(text) {
+    document.getElementById("promptBox").value = text;
+}
+</script>
 
 </body>
 </html>
