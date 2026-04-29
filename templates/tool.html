@@ -26,7 +26,7 @@ body {
     margin-left:20px;
 }
 
-/* CENTER CHAT AREA */
+/* CENTER */
 .wrapper {
     display:flex;
     flex-direction:column;
@@ -38,12 +38,11 @@ body {
 
 h1 {
     font-size:42px;
-    margin-bottom:10px;
 }
 
 .subtitle {
     color:#94a3b8;
-    margin-bottom:40px;
+    margin-bottom:30px;
 }
 
 /* INPUT */
@@ -55,7 +54,6 @@ h1 {
     padding:10px;
     display:flex;
     align-items:center;
-    box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
 
 textarea {
@@ -78,7 +76,7 @@ button {
     cursor:pointer;
 }
 
-/* OUTPUT BELOW */
+/* OUTPUT */
 .output {
     margin-top:30px;
     width:700px;
@@ -88,6 +86,13 @@ button {
     border-radius:15px;
     text-align:left;
     white-space:pre-wrap;
+}
+
+/* LOADER */
+.loader {
+    display:none;
+    margin-top:20px;
+    color:#94a3b8;
 }
 </style>
 
@@ -113,6 +118,7 @@ button {
 <div class="wrapper">
 
 <h1>{{ title }}</h1>
+
 <p class="subtitle">
 {% if title == "AI Content Generator" %}Generate SEO articles instantly{% endif %}
 {% if title == "Humanize AI Text" %}Make AI content sound human{% endif %}
@@ -121,12 +127,14 @@ button {
 {% if title == "Paragraph Generator" %}Create paragraphs instantly{% endif %}
 </p>
 
-<form method="POST">
+<form method="POST" onsubmit="showLoader()">
 <div class="chat-box">
 <textarea name="prompt" placeholder="Type your request..."></textarea>
 <button type="submit">↑</button>
 </div>
 </form>
+
+<div class="loader" id="loader">Generating...</div>
 
 {% if response %}
 
@@ -136,6 +144,12 @@ button {
 {% endif %}
 
 </div>
+
+<script>
+function showLoader() {
+    document.getElementById("loader").style.display = "block";
+}
+</script>
 
 </body>
 </html>
