@@ -1,223 +1,112 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>AI Content Toolkit</title>
-<a href="/ai-content-generator" style="display:inline-block; margin-top:10px; color:#38bdf8;">
-    Try Free AI Content Generator →
-</a>
+<title>BuildContent AI</title>
+
 <style>
 body {
-    margin: 0;
+    margin:0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: #fff;
+    background: radial-gradient(circle at top, #1e293b, #020617);
+    color:white;
 }
 
-/* HEADER */
-.header {
-    text-align: center;
-    padding: 30px 20px;
+/* NAVBAR */
+.navbar {
+    display:flex;
+    justify-content:space-between;
+    padding:15px 30px;
+    background:#020617;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 32px;
+.navbar a {
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
 }
 
-.header p {
-    color: #94a3b8;
+/* CENTER */
+.wrapper {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:85vh;
+    text-align:center;
 }
 
-/* CONTAINER */
-.container {
-    max-width: 900px;
-    margin: 20px auto;
-    background: #111827;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+h1 {
+    font-size:48px;
 }
 
-/* TABS */
-.tabs {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
+.subtitle {
+    color:#94a3b8;
+    margin-bottom:40px;
 }
 
-.tabs button {
-    padding: 10px 15px;
-    border: none;
-    background: #1f2937;
-    color: #cbd5f5;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
+/* CHAT BOX */
+.chat-box {
+    width:650px;
+    max-width:90%;
+    background:#0f172a;
+    border-radius:40px;
+    padding:10px;
+    display:flex;
+    align-items:center;
 }
 
-.tabs button.active {
-    background: #3b82f6;
-    color: white;
-}
-
-.tabs button:hover {
-    background: #2563eb;
-}
-
-/* TEXTAREA */
 textarea {
-    width: 100%;
-    height: 160px;
-    padding: 14px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    background: #0f172a;
-    color: white;
-    font-size: 14px;
+    flex:1;
+    background:transparent;
+    border:none;
+    color:white;
+    padding:15px;
+    outline:none;
+    resize:none;
 }
 
 /* BUTTON */
-.generate {
-    margin-top: 15px;
-    padding: 12px 22px;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    font-size: 15px;
-    transition: 0.3s;
-}
-
-.generate:hover {
-    opacity: 0.9;
-}
-
-/* OUTPUT */
-.output {
-    margin-top: 25px;
-    background: #0f172a;
-    padding: 20px;
-    border-radius: 12px;
-    min-height: 120px;
-    white-space: pre-wrap;
-}
-
-/* COPY BUTTON */
-.copy-btn {
-    margin-top: 10px;
-    padding: 8px 12px;
-    background: #374151;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-}
-
-/* LOADING */
-.loading {
-    display: none;
-    margin-top: 10px;
-    color: #94a3b8;
-    font-size: 14px;
+button {
+    background:#7c3aed;
+    border:none;
+    color:white;
+    padding:14px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:18px;
 }
 </style>
 
-<script>
-function setMode(mode) {
-    document.getElementById("mode").value = mode;
-
-    let buttons = document.querySelectorAll(".tabs button");
-    buttons.forEach(btn => btn.classList.remove("active"));
-
-    document.getElementById(mode).classList.add("active");
-}
-
-function showLoading() {
-    document.getElementById("loading").style.display = "block";
-}
-
-function copyText() {
-    let text = document.getElementById("outputText").innerText;
-    navigator.clipboard.writeText(text);
-    alert("Copied!");
-}
-</script>
-
 </head>
 
 <body>
 
-    </style>
-</head>
-
-<body>
-
-<body>
-
-<!-- NAVBAR -->
-<div style="display:flex; justify-content:space-between; padding:15px 30px; background:#0f172a; color:white;">
+<div class="navbar">
+    <div>🚀 BuildContent AI</div>
 
 ```
-<div style="font-weight:bold;">🚀 BuildContent AI</div>
-
-<div style="display:flex; gap:20px;">
-    <a href="/" style="color:white; text-decoration:none;">Home</a>
-    <a href="/ai-content-generator" style="color:white; text-decoration:none;">AI Writer</a>
-    <a href="/humanize-ai-text" style="color:white; text-decoration:none;">Humanize</a>
-    <a href="/ai-detector-free" style="color:white; text-decoration:none;">AI Detector</a>
-    <a href="/free-seo-writer" style="color:white; text-decoration:none;">SEO Writer</a>
-    <a href="/ai-paragraph-generator" style="color:white; text-decoration:none;">Paragraph</a>
+<div>
+    <a href="/ai-content-generator">AI Writer</a>
+    <a href="/humanize-ai-text">Humanize</a>
+    <a href="/ai-detector-free">Detector</a>
+    <a href="/free-seo-writer">SEO</a>
 </div>
-
-</div>
-
-<div class="header">
-    <h1>🚀 AI Content Toolkit</h1>
-    <p>Generate SEO content, humanize AI text, detect AI, and more</p>
-</div>
-
-<div class="container">
-
 ```
-<div class="tabs">
-    <button id="seo" class="active" onclick="setMode('seo')">SEO</button>
-    <button id="humanize" onclick="setMode('humanize')">Humanize</button>
-    <button id="detect" onclick="setMode('detect')">Detect AI</button>
-    <button id="count" onclick="setMode('count')">Word Count</button>
-    <button id="image" onclick="setMode('image')">Image</button>
+
 </div>
 
-<form method="POST" onsubmit="showLoading()">
-    <input type="hidden" name="mode" id="mode" value="seo">
+<div class="wrapper">
 
-    <textarea name="prompt" placeholder="Enter your content here..."></textarea>
+<h1>BuildContent AI</h1>
+<p class="subtitle">All-in-one AI writing platform</p>
 
-    <br>
-    <button class="generate" type="submit">Generate</button>
-
-    <p id="loading" class="loading">⏳ Generating content...</p>
+<form action="/ai-content-generator" method="GET">
+<div class="chat-box">
+<textarea placeholder="Ask anything..."></textarea>
+<button>↑</button>
+</div>
 </form>
-
-<div class="output" id="outputText">
-    {% if response %}
-        {{ response }}
-    {% else %}
-        <span style="color:#64748b;">Your generated content will appear here...</span>
-    {% endif %}
-</div>
-
-<button class="copy-btn" onclick="copyText()">Copy Output</button>
-```
-    <a href="/ai-content-generator" style="color:#60a5fa;">Free AI Content Generator</a>
-    <a href="/humanize-ai-text" style="color:#38bdf8;">Humanize AI Text Tool</a>
-    <a href="/ai-detector-free" style="color:#38bdf8;">AI Detector Free</a>
-    <a href="/free-seo-writer" style="color:#38bdf8;">Free SEO Writer</a>
-    <a href="/ai-paragraph-generator" style="color:#38bdf8;">AI Paragraph Generator</a>
 
 </div>
 
