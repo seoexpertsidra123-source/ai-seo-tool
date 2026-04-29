@@ -126,6 +126,10 @@ def seo_page():
 def ai_content():
     return render_template("ai-content-generator.html")
 
+@app.route("/humanize-ai-text")
+def humanize_page():
+    return render_template("humanize-ai-text.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
