@@ -5,143 +5,143 @@ import re
 
 app = Flask(__name__)
 
-# 🔐 API KEY from environment (Render)
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    response_text = ""
-
-    if request.method == "POST":
-        user_input = request.form.get("prompt", "")
-        mode = request.form.get("mode", "seo")
-
-        # 🔥 MODE LOGIC
-        if mode == "seo":
-            prompt = f"Write a clean, human-like SEO article about {user_input}. Include title, meta description, and headings. Do NOT use markdown, stars, hashtags, or symbols."
-
-        elif mode == "humanize":
-            prompt = f"Rewrite this content in a natural, human-like tone:\n{user_input}"
-
-        elif mode == "detect":
-            prompt = f"Analyze this content and tell if it is AI-generated or human-written. Give percentage and explanation:\n{user_input}"
-
-        elif mode == "count":
-            prompt = f"Count total words, sentences, and characters in this text:\n{user_input}"
-
-        elif mode == "image":
-            prompt = f"Create a detailed AI image prompt based on this idea:\n{user_input}"
-
-        else:
-            prompt = user_input
-
-        try:
-            response = client.chat.completions.create(
-                model="gpt-4.1-mini",
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
-            )
-
-            response_text = response.choices[0].message.content
-
-            # 🔥 STRONG CLEANING (removes markdown garbage)
-            response_text = re.sub(r"```.*?```", "", response_text, flags=re.DOTALL)
-            response_text = re.sub(r"[#*_`>-]", "", response_text)
-            response_text = response_text.replace("---", "")
-            response_text = re.sub(r"\n\s*\n", "\n\n", response_text)
-            response_text = response_text.strip()
-
-        except Exception as e:
-            response_text = f"Error: {str(e)}"
-
-    return render_template("index.html", response=response_text)
-
-from flask import Flask, render_template, request
-from openai import OpenAI
-import os
-import re
-
-app = Flask(__name__)
-
-# API key from environment (Render)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    response_text = ""
-
-    if request.method == "POST":
-        user_input = request.form.get("prompt", "")
-        mode = request.form.get("mode", "seo")
-
-        # MODE LOGIC
-        if mode == "seo":
-            prompt = f"Write a clean, human-like SEO article about {user_input}. Include title, meta description, and headings. No symbols."
-
-        elif mode == "humanize":
-            prompt = f"Rewrite this text in a natural human tone:\n{user_input}"
-
-        elif mode == "detect":
-            prompt = f"Check if this content is AI or human written. Give percentage and explanation:\n{user_input}"
-
-        elif mode == "count":
-            prompt = f"Count words, sentences, and characters:\n{user_input}"
-
-        elif mode == "image":
-            prompt = f"Create a detailed image prompt based on:\n{user_input}"
-
-        else:
-            prompt = user_input
-
-        try:
-            response = client.chat.completions.create(
-                model="gpt-4.1-mini",
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
-            )
-
-            response_text = response.choices[0].message.content
-
-            # CLEAN OUTPUT (remove markdown symbols)
-            response_text = re.sub(r"```.*?```", "", response_text, flags=re.DOTALL)
-            response_text = re.sub(r"[#*_`>-]", "", response_text)
-            response_text = response_text.replace("---", "")
-            response_text = re.sub(r"\n\s*\n", "\n\n", response_text)
-            response_text = response_text.strip()
-
-        except Exception as e:
-            response_text = f"Error: {str(e)}"
-
-    return render_template("index.html", response=response_text)
+# ================= MAIN HOME =================
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 
-# SEO LANDING PAGE ROUTE
-@app.route("/seo-tool")
-def seo_page():
-    return render_template("seo.html")
-
-@app.route("/ai-content-generator")
+# ================= AI CONTENT GENERATOR =================
+@app.route("/ai-content-generator", methods=["GET", "POST"])
 def ai_content():
-    return render_template("ai-content-generator.html")
+    response_text = ""
 
-@app.route("/humanize-ai-text")
-def humanize_page():
-    return render_template("humanize-ai-text.html")
+    if request.method == "POST":
+        user_input = request.form.get("prompt")
 
-@app.route("/ai-detector-free")
-def detector_page():
-    return render_template("ai-detector-free.html")
+        prompt = f"Write a fully SEO optimized article about {user_input}"
 
-@app.route("/free-seo-writer")
-def seo_writer_page():
-    return render_template("free-seo-writer.html")
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[{"role": "user", "content": prompt}]
+            )
 
-@app.route("/ai-paragraph-generator")
-def paragraph_page():
-    return render_template("ai-paragraph-generator.html")
+            response_text = clean(response.choices[0].message.content)
+
+        except Exception as e:
+            response_text = str(e)
+
+    return render_template("tool.html", response=response_text, title="AI Content Generator")
 
 
+# ================= HUMANIZER =================
+@app.route("/humanize-ai-text", methods=["GET", "POST"])
+def humanize():
+    response_text = ""
+
+    if request.method == "POST":
+        user_input = request.form.get("prompt")
+
+        prompt = f"Rewrite this content in a natural human tone:\n{user_input}"
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            response_text = clean(response.choices[0].message.content)
+
+        except Exception as e:
+            response_text = str(e)
+
+    return render_template("tool.html", response=response_text, title="Humanize AI Text")
+
+
+# ================= AI DETECTOR =================
+@app.route("/ai-detector-free", methods=["GET", "POST"])
+def detector():
+    response_text = ""
+
+    if request.method == "POST":
+        user_input = request.form.get("prompt")
+
+        prompt = f"Analyze if this content is AI or human. Give percentage:\n{user_input}"
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            response_text = clean(response.choices[0].message.content)
+
+        except Exception as e:
+            response_text = str(e)
+
+    return render_template("tool.html", response=response_text, title="AI Detector")
+
+
+# ================= SEO WRITER =================
+@app.route("/free-seo-writer", methods=["GET", "POST"])
+def seo_writer():
+    response_text = ""
+
+    if request.method == "POST":
+        user_input = request.form.get("prompt")
+
+        prompt = f"Write SEO optimized content about {user_input}"
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            response_text = clean(response.choices[0].message.content)
+
+        except Exception as e:
+            response_text = str(e)
+
+    return render_template("tool.html", response=response_text, title="SEO Writer")
+
+
+# ================= PARAGRAPH =================
+@app.route("/ai-paragraph-generator", methods=["GET", "POST"])
+def paragraph():
+    response_text = ""
+
+    if request.method == "POST":
+        user_input = request.form.get("prompt")
+
+        prompt = f"Write a high-quality paragraph about {user_input}"
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            response_text = clean(response.choices[0].message.content)
+
+        except Exception as e:
+            response_text = str(e)
+
+    return render_template("tool.html", response=response_text, title="Paragraph Generator")
+
+
+# ================= CLEAN FUNCTION =================
+def clean(text):
+    text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
+    text = re.sub(r"[#*_`>-]", "", text)
+    text = text.replace("---", "")
+    text = re.sub(r"\n\s*\n", "\n\n", text)
+    return text.strip()
+
+
+# ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)
