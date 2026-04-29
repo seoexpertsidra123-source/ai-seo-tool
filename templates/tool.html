@@ -7,7 +7,7 @@
 <style>
 body {
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI';
     background: radial-gradient(circle at top, #1e293b, #020617);
     color:white;
 }
@@ -26,34 +26,42 @@ body {
     margin-left:20px;
 }
 
-/* CENTER */
-.wrapper {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    height:80vh;
-    text-align:center;
+/* CHAT AREA */
+.chat-container {
+    max-width:800px;
+    margin:40px auto;
 }
 
-h1 {
-    font-size:42px;
+/* MESSAGE */
+.message {
+    padding:15px;
+    margin:10px 0;
+    border-radius:15px;
+    max-width:80%;
+    animation:fadeIn 0.3s ease;
 }
 
-.subtitle {
-    color:#94a3b8;
-    margin-bottom:30px;
+.user {
+    background:#7c3aed;
+    margin-left:auto;
+}
+
+.bot {
+    background:#0f172a;
 }
 
 /* INPUT */
-.chat-box {
-    width:600px;
+.input-box {
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:800px;
     max-width:90%;
     background:#0f172a;
     border-radius:40px;
     padding:10px;
     display:flex;
-    align-items:center;
 }
 
 textarea {
@@ -71,28 +79,15 @@ button {
     background:#7c3aed;
     border:none;
     color:white;
-    padding:14px;
+    padding:12px;
     border-radius:50%;
     cursor:pointer;
 }
 
-/* OUTPUT */
-.output {
-    margin-top:30px;
-    width:700px;
-    max-width:90%;
-    background:#0f172a;
-    padding:20px;
-    border-radius:15px;
-    text-align:left;
-    white-space:pre-wrap;
-}
-
-/* LOADER */
-.loader {
-    display:none;
-    margin-top:20px;
-    color:#94a3b8;
+/* ANIMATION */
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(10px);}
+    to {opacity:1; transform:translateY(0);}
 }
 </style>
 
@@ -102,53 +97,64 @@ button {
 
 <div class="navbar">
     <div>🚀 BuildContent AI</div>
-
-```
-<div>
-    <a href="/">Home</a>
-    <a href="/ai-content-generator">AI Writer</a>
-    <a href="/humanize-ai-text">Humanize</a>
-    <a href="/ai-detector-free">Detector</a>
-    <a href="/free-seo-writer">SEO</a>
-</div>
-```
-
+    <div>
+        <a href="/">Home</a>
+        <a href="/ai-content-generator">AI Writer</a>
+        <a href="/humanize-ai-text">Humanize</a>
+    </div>
 </div>
 
-<div class="wrapper">
+<div class="chat-container" id="chat"></div>
 
-<h1>{{ title }}</h1>
+<form method="POST" onsubmit="saveMessage()">
 
-<p class="subtitle">
-{% if title == "AI Content Generator" %}Generate SEO articles instantly{% endif %}
-{% if title == "Humanize AI Text" %}Make AI content sound human{% endif %}
-{% if title == "AI Detector" %}Detect AI vs human writing{% endif %}
-{% if title == "SEO Writer" %}Write content that ranks on Google{% endif %}
-{% if title == "Paragraph Generator" %}Create paragraphs instantly{% endif %}
-</p>
-
-<form method="POST" onsubmit="showLoader()">
-<div class="chat-box">
-<textarea name="prompt" placeholder="Type your request..."></textarea>
-<button type="submit">↑</button>
+<div class="input-box">
+<textarea name="prompt" id="input" placeholder="Type your request..."></textarea>
+<button>↑</button>
 </div>
+
 </form>
 
-<div class="loader" id="loader">Generating...</div>
+<script>
 
+// LOAD HISTORY
+window.onload = function() {
+    let history = JSON.parse(localStorage.getItem("chat")) || [];
+    history.forEach(msg => addMessage(msg.text, msg.type));
+}
+
+// ADD MESSAGE
+function addMessage(text, type) {
+    let div = document.createElement("div");
+    div.className = "message " + type;
+    div.innerText = text;
+    document.getElementById("chat").appendChild(div);
+}
+
+// SAVE USER MESSAGE
+function saveMessage() {
+    let input = document.getElementById("input").value;
+
+    if (!input) return;
+
+    addMessage(input, "user");
+
+    let history = JSON.parse(localStorage.getItem("chat")) || [];
+    history.push({text: input, type: "user"});
+    localStorage.setItem("chat", JSON.stringify(history));
+}
+
+// SHOW RESPONSE FROM SERVER
 {% if response %}
+setTimeout(() => {
+    addMessage(`{{ response }}`, "bot");
 
-<div class="output">
-{{ response }}
-</div>
+    let history = JSON.parse(localStorage.getItem("chat")) || [];
+    history.push({text: `{{ response }}`, type: "bot"});
+    localStorage.setItem("chat", JSON.stringify(history));
+}, 500);
 {% endif %}
 
-</div>
-
-<script>
-function showLoader() {
-    document.getElementById("loader").style.display = "block";
-}
 </script>
 
 </body>
