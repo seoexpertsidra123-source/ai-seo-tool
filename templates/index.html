@@ -24,39 +24,45 @@ body {
     color:white;
     text-decoration:none;
     margin-left:20px;
-    font-size:14px;
 }
 
-/* CENTER */
-.wrapper {
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    height:85vh;
-    text-align:center;
+/* CHAT AREA */
+.chat-container {
+    max-width:800px;
+    margin:20px auto 120px;
+    padding:20px;
 }
 
-h1 {
-    font-size:48px;
-    margin-bottom:10px;
+/* MESSAGE */
+.message {
+    padding:15px;
+    margin:10px 0;
+    border-radius:15px;
+    max-width:75%;
+    animation:fadeIn 0.3s ease;
 }
 
-.subtitle {
-    color:#94a3b8;
-    margin-bottom:30px;
+.user {
+    background:#7c3aed;
+    margin-left:auto;
 }
 
-/* CHAT BOX */
-.chat-box {
-    width:650px;
+.bot {
+    background:#0f172a;
+}
+
+/* INPUT */
+.input-box {
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:800px;
     max-width:90%;
     background:#0f172a;
     border-radius:40px;
     padding:10px;
     display:flex;
-    align-items:center;
-    box-shadow:0 0 25px rgba(0,0,0,0.4);
 }
 
 textarea {
@@ -67,7 +73,6 @@ textarea {
     padding:15px;
     outline:none;
     resize:none;
-    font-size:14px;
 }
 
 /* BUTTON */
@@ -75,34 +80,30 @@ button {
     background:#7c3aed;
     border:none;
     color:white;
-    padding:14px;
+    padding:12px;
     border-radius:50%;
     cursor:pointer;
-    font-size:16px;
 }
 
 /* SUGGESTIONS */
 .suggestions {
-    margin-top:20px;
     display:flex;
     gap:10px;
-    flex-wrap:wrap;
     justify-content:center;
+    margin-top:10px;
 }
 
 .suggestions button {
     background:#0f172a;
     border:1px solid #1e293b;
-    color:white;
-    padding:10px 15px;
     border-radius:20px;
-    cursor:pointer;
-    font-size:13px;
-    transition:0.3s;
+    padding:8px 14px;
 }
 
-.suggestions button:hover {
-    background:#7c3aed;
+/* ANIMATION */
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(10px);}
+    to {opacity:1; transform:translateY(0);}
 }
 </style>
 
@@ -126,39 +127,75 @@ button {
 
 </div>
 
-<!-- MAIN -->
+<!-- CHAT -->
 
-<div class="wrapper">
+<div class="chat-container" id="chat"></div>
 
-<h1>BuildContent AI</h1>
-<p class="subtitle">All-in-one AI writing platform</p>
+<!-- INPUT -->
 
-<form action="/ai-content-generator" method="GET">
-
-<div class="chat-box">
-<textarea id="promptBox" placeholder="Ask anything..."></textarea>
-<button>↑</button>
+<div class="input-box">
+<textarea id="input" placeholder="Ask anything..."></textarea>
+<button onclick="sendMessage()">↑</button>
 </div>
-
-</form>
 
 <!-- SUGGESTIONS -->
 
 <div class="suggestions">
-    <button onclick="setPrompt('Write SEO article about digital marketing')">SEO Article</button>
-    <button onclick="setPrompt('Do keyword research for fitness niche')">Keyword Research</button>
-    <button onclick="setPrompt('Write Instagram caption for travel')">Social Caption</button>
-    <button onclick="setPrompt('Generate blog ideas for tech')">Blog Ideas</button>
+    <button onclick="quick('Write SEO article about digital marketing')">SEO</button>
+    <button onclick="quick('Do keyword research for fitness niche')">Keywords</button>
+    <button onclick="quick('Write Instagram caption for travel')">Caption</button>
+    <button onclick="quick('Generate blog ideas for tech')">Ideas</button>
 </div>
-
-</div>
-
-<!-- SCRIPT -->
 
 <script>
-function setPrompt(text) {
-    document.getElementById("promptBox").value = text;
+
+// LOAD HISTORY
+window.onload = function() {
+    let history = JSON.parse(localStorage.getItem("chat_home")) || [];
+    history.forEach(msg => addMessage(msg.text, msg.type));
 }
+
+// ADD MESSAGE
+function addMessage(text, type) {
+    let div = document.createElement("div");
+    div.className = "message " + type;
+    div.innerText = text;
+    document.getElementById("chat").appendChild(div);
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+// SEND MESSAGE
+function sendMessage() {
+    let input = document.getElementById("input").value;
+
+    if (!input) return;
+
+    addMessage(input, "user");
+
+    save(input, "user");
+
+    // Fake typing animation
+    setTimeout(() => {
+        let reply = "Processing your request... Please open AI Writer for full results.";
+        addMessage(reply, "bot");
+        save(reply, "bot");
+    }, 600);
+
+    document.getElementById("input").value = "";
+}
+
+// QUICK BUTTON
+function quick(text) {
+    document.getElementById("input").value = text;
+}
+
+// SAVE HISTORY
+function save(text, type) {
+    let history = JSON.parse(localStorage.getItem("chat_home")) || [];
+    history.push({text, type});
+    localStorage.setItem("chat_home", JSON.stringify(history));
+}
+
 </script>
 
 </body>
