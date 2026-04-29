@@ -18,7 +18,6 @@ body {
     justify-content:space-between;
     padding:15px 30px;
     background:#020617;
-    border-bottom:1px solid #1e293b;
 }
 
 .navbar a {
@@ -27,31 +26,36 @@ body {
     margin-left:20px;
 }
 
-/* MAIN */
-.container {
-    max-width:900px;
-    margin:80px auto;
+/* CENTER CHAT AREA */
+.wrapper {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:80vh;
     text-align:center;
 }
 
 h1 {
-    font-size:40px;
+    font-size:42px;
     margin-bottom:10px;
 }
 
 .subtitle {
     color:#94a3b8;
-    margin-bottom:30px;
+    margin-bottom:40px;
 }
 
-/* INPUT BOX */
-.input-box {
+/* INPUT */
+.chat-box {
+    width:600px;
+    max-width:90%;
+    background:#0f172a;
+    border-radius:40px;
+    padding:10px;
     display:flex;
     align-items:center;
-    background:#0f172a;
-    border-radius:30px;
-    padding:10px;
-    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
 
 textarea {
@@ -60,8 +64,8 @@ textarea {
     border:none;
     color:white;
     padding:15px;
-    resize:none;
     outline:none;
+    resize:none;
 }
 
 /* BUTTON */
@@ -69,29 +73,27 @@ button {
     background:#7c3aed;
     border:none;
     color:white;
-    padding:12px 18px;
+    padding:14px;
     border-radius:50%;
     cursor:pointer;
-    font-size:18px;
 }
 
-/* OUTPUT */
+/* OUTPUT BELOW */
 .output {
     margin-top:30px;
+    width:700px;
+    max-width:90%;
     background:#0f172a;
-    padding:25px;
+    padding:20px;
     border-radius:15px;
     text-align:left;
     white-space:pre-wrap;
-    box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 </style>
 
 </head>
 
 <body>
-
-<!-- NAVBAR -->
 
 <div class="navbar">
     <div>🚀 BuildContent AI</div>
@@ -108,25 +110,30 @@ button {
 
 </div>
 
-<!-- MAIN -->
-
-<div class="container">
+<div class="wrapper">
 
 <h1>{{ title }}</h1>
-<p class="subtitle">Generate powerful AI content instantly</p>
+<p class="subtitle">
+{% if title == "AI Content Generator" %}Generate SEO articles instantly{% endif %}
+{% if title == "Humanize AI Text" %}Make AI content sound human{% endif %}
+{% if title == "AI Detector" %}Detect AI vs human writing{% endif %}
+{% if title == "SEO Writer" %}Write content that ranks on Google{% endif %}
+{% if title == "Paragraph Generator" %}Create paragraphs instantly{% endif %}
+</p>
 
 <form method="POST">
-
-<div class="input-box">
+<div class="chat-box">
 <textarea name="prompt" placeholder="Type your request..."></textarea>
 <button type="submit">↑</button>
 </div>
-
 </form>
+
+{% if response %}
 
 <div class="output">
 {{ response }}
 </div>
+{% endif %}
 
 </div>
 
