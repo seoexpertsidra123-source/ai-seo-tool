@@ -57,6 +57,71 @@ def index():
 
     return render_template("index.html", response=response_text)
 
+from flask import Flask, render_template, request
+from openai import OpenAI
+import os
+import re
+
+app = Flask(__name__)
+
+# API key from environment (Render)
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    response_text = ""
+
+    if request.method == "POST":
+        user_input = request.form.get("prompt", "")
+        mode = request.form.get("mode", "seo")
+
+        # MODE LOGIC
+        if mode == "seo":
+            prompt = f"Write a clean, human-like SEO article about {user_input}. Include title, meta description, and headings. No symbols."
+
+        elif mode == "humanize":
+            prompt = f"Rewrite this text in a natural human tone:\n{user_input}"
+
+        elif mode == "detect":
+            prompt = f"Check if this content is AI or human written. Give percentage and explanation:\n{user_input}"
+
+        elif mode == "count":
+            prompt = f"Count words, sentences, and characters:\n{user_input}"
+
+        elif mode == "image":
+            prompt = f"Create a detailed image prompt based on:\n{user_input}"
+
+        else:
+            prompt = user_input
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+
+            response_text = response.choices[0].message.content
+
+            # CLEAN OUTPUT (remove markdown symbols)
+            response_text = re.sub(r"```.*?```", "", response_text, flags=re.DOTALL)
+            response_text = re.sub(r"[#*_`>-]", "", response_text)
+            response_text = response_text.replace("---", "")
+            response_text = re.sub(r"\n\s*\n", "\n\n", response_text)
+            response_text = response_text.strip()
+
+        except Exception as e:
+            response_text = f"Error: {str(e)}"
+
+    return render_template("index.html", response=response_text)
+
+
+# SEO LANDING PAGE ROUTE
+@app.route("/seo-tool")
+def seo_page():
+    return render_template("seo.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
