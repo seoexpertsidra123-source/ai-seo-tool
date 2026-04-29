@@ -122,6 +122,10 @@ def index():
 def seo_page():
     return render_template("seo.html")
 
+@app.route("/ai-content-generator")
+def ai_content():
+    return render_template("ai-content-generator.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
