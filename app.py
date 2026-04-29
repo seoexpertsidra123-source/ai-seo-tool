@@ -134,6 +134,10 @@ def humanize_page():
 def detector_page():
     return render_template("ai-detector-free.html")
 
+@app.route("/free-seo-writer")
+def seo_writer_page():
+    return render_template("free-seo-writer.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
