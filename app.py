@@ -138,6 +138,10 @@ def detector_page():
 def seo_writer_page():
     return render_template("free-seo-writer.html")
 
+@app.route("/ai-paragraph-generator")
+def paragraph_page():
+    return render_template("ai-paragraph-generator.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
