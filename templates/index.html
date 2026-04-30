@@ -20,12 +20,6 @@ body {
     background:#020617;
 }
 
-.navbar a {
-    color:white;
-    text-decoration:none;
-    margin-left:20px;
-}
-
 /* CHAT AREA */
 .chat-container {
     max-width:800px;
@@ -90,7 +84,7 @@ button {
     display:flex;
     gap:10px;
     justify-content:center;
-    margin-top:10px;
+    margin-bottom:80px;
 }
 
 .suggestions button {
@@ -98,6 +92,7 @@ button {
     border:1px solid #1e293b;
     border-radius:20px;
     padding:8px 14px;
+    cursor:pointer;
 }
 
 /* ANIMATION */
@@ -111,49 +106,25 @@ button {
 
 <body>
 
-<!-- NAVBAR -->
-
 <div class="navbar">
-    <div>🚀 BuildContent AI</div>
-
-```
-<div>
-    <a href="/ai-content-generator">AI Writer</a>
-    <a href="/humanize-ai-text">Humanize</a>
-    <a href="/ai-detector-free">Detector</a>
-    <a href="/free-seo-writer">SEO</a>
+    🚀 BuildContent AI
 </div>
-```
-
-</div>
-
-<!-- CHAT -->
 
 <div class="chat-container" id="chat"></div>
 
-<!-- INPUT -->
+<div class="suggestions">
+    <button onclick="quick('Write SEO article about digital marketing')">SEO</button>
+    <button onclick="quick('Keyword research for fitness niche')">Keywords</button>
+    <button onclick="quick('Instagram caption for travel')">Caption</button>
+    <button onclick="quick('Blog ideas for tech')">Ideas</button>
+</div>
 
 <div class="input-box">
 <textarea id="input" placeholder="Ask anything..."></textarea>
 <button onclick="sendMessage()">↑</button>
 </div>
 
-<!-- SUGGESTIONS -->
-
-<div class="suggestions">
-    <button onclick="quick('Write SEO article about digital marketing')">SEO</button>
-    <button onclick="quick('Do keyword research for fitness niche')">Keywords</button>
-    <button onclick="quick('Write Instagram caption for travel')">Caption</button>
-    <button onclick="quick('Generate blog ideas for tech')">Ideas</button>
-</div>
-
 <script>
-
-// LOAD HISTORY
-window.onload = function() {
-    let history = JSON.parse(localStorage.getItem("chat_home")) || [];
-    history.forEach(msg => addMessage(msg.text, msg.type));
-}
 
 // ADD MESSAGE
 function addMessage(text, type) {
@@ -165,35 +136,38 @@ function addMessage(text, type) {
 }
 
 // SEND MESSAGE
-function sendMessage() {
-    let input = document.getElementById("input").value;
+async function sendMessage() {
+    let input = document.getElementById("input");
+    let text = input.value;
 
-    if (!input) return;
+    if (!text) return;
 
-    addMessage(input, "user");
+    addMessage(text, "user");
+    input.value = "";
 
-    save(input, "user");
+    // typing indicator
+    let typing = document.createElement("div");
+    typing.className = "message bot";
+    typing.innerText = "Typing...";
+    typing.id = "typing";
+    document.getElementById("chat").appendChild(typing);
 
-    // Fake typing animation
-    setTimeout(() => {
-        let reply = "Processing your request... Please open AI Writer for full results.";
-        addMessage(reply, "bot");
-        save(reply, "bot");
-    }, 600);
+    let response = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ message: text })
+    });
 
-    document.getElementById("input").value = "";
+    let data = await response.json();
+
+    document.getElementById("typing").remove();
+
+    addMessage(data.reply, "bot");
 }
 
 // QUICK BUTTON
 function quick(text) {
     document.getElementById("input").value = text;
-}
-
-// SAVE HISTORY
-function save(text, type) {
-    let history = JSON.parse(localStorage.getItem("chat_home")) || [];
-    history.push({text, type});
-    localStorage.setItem("chat_home", JSON.stringify(history));
 }
 
 </script>
