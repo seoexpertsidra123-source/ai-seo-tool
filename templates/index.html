@@ -6,10 +6,144 @@
 
 <style>
 body {
-    margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top, #1e293b, #020617);
-    color:white;
+    <body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+    🚀 BuildContent AI
+</div>
+
+<div style="display:flex;">
+
+```
+<!-- SIDEBAR -->
+<div style="width:250px; background:#020617; height:100vh; padding:15px;">
+    <button onclick="newChat()" style="width:100%; padding:10px; margin-bottom:10px; background:#7c3aed; border:none; color:white; border-radius:8px;">
+        + New Chat
+    </button>
+
+    <div id="history"></div>
+</div>
+
+<!-- MAIN CHAT -->
+<div style="flex:1; padding:20px;">
+    <div id="chat" class="chat-container"></div>
+
+    <div class="input-box">
+        <textarea id="input" placeholder="Ask anything..."></textarea>
+        <button onclick="sendMessage()">↑</button>
+    </div>
+</div>
+```
+
+</div>
+
+<script>
+
+let chats = JSON.parse(localStorage.getItem("all_chats")) || {};
+let currentChat = "chat_" + Date.now();
+
+// LOAD HISTORY LIST
+function loadHistory() {
+    let historyDiv = document.getElementById("history");
+    historyDiv.innerHTML = "";
+
+    Object.keys(chats).forEach(id => {
+        let btn = document.createElement("div");
+        btn.innerText = "Chat";
+        btn.style.padding = "8px";
+        btn.style.cursor = "pointer";
+
+        btn.onclick = () => switchChat(id);
+        historyDiv.appendChild(btn);
+    });
+}
+
+// SWITCH CHAT
+function switchChat(id) {
+    currentChat = id;
+    document.getElementById("chat").innerHTML = "";
+
+    chats[id].forEach(msg => {
+        addMessage(msg.text, msg.type);
+    });
+}
+
+// NEW CHAT
+function newChat() {
+    currentChat = "chat_" + Date.now();
+    chats[currentChat] = [];
+    document.getElementById("chat").innerHTML = "";
+    saveChats();
+    loadHistory();
+}
+
+// ADD MESSAGE
+function addMessage(text, type) {
+    let div = document.createElement("div");
+    div.className = "message " + type;
+    div.innerText = text;
+    document.getElementById("chat").appendChild(div);
+}
+
+// SEND MESSAGE
+async function sendMessage() {
+    let input = document.getElementById("input");
+    let text = input.value;
+
+    if (!text) return;
+
+    addMessage(text, "user");
+
+    chats[currentChat] = chats[currentChat] || [];
+    chats[currentChat].push({text, type:"user"});
+
+    input.value = "";
+
+    let typing = document.createElement("div");
+    typing.className = "message bot";
+    typing.innerText = "Typing...";
+    typing.id = "typing";
+    document.getElementById("chat").appendChild(typing);
+
+    let res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({message:text})
+    });
+
+    let data = await res.json();
+
+    document.getElementById("typing").remove();
+
+    addMessage(data.reply, "bot");
+
+    chats[currentChat].push({text:data.reply, type:"bot"});
+
+    saveChats();
+}
+
+// SAVE
+function saveChats() {
+    localStorage.setItem("all_chats", JSON.stringify(chats));
+}
+
+// INIT
+window.onload = function() {
+    if (Object.keys(chats).length === 0) {
+        newChat();
+    } else {
+        currentChat = Object.keys(chats)[0];
+        switchChat(currentChat);
+    }
+    loadHistory();
+}
+
+</script>
+
+</body>
+
 }
 
 /* NAVBAR */
