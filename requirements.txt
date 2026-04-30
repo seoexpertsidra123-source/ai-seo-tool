@@ -1,4 +1,6 @@
 flask
+flask-login
+flask-sqlalchemy
 openai
 gunicorn
-pip install flask-login flask-sqlalchemy werkzeug
+werkzeug
