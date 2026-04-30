@@ -140,7 +140,9 @@ def clean(text):
     text = text.replace("---", "")
     text = re.sub(r"\n\s*\n", "\n\n", text)
     return text.strip()
-
+    
+with app.app_context():
+    db.create_all()
 
 # ================= RUN =================
 if __name__ == "__main__":
